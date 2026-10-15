@@ -5,7 +5,8 @@
 <p align="center">Мобильное приложение для пляжного гардероба: каталог купальников, личная коллекция, список желаний и сравнение цен в магазинах.<br>Flutter, один код для Android, iOS и веба.</p>
 
 <p align="center">
-  <a href="https://silokon.github.io/lagoona-demo/"><b>Открыть демо в браузере</b></a> · лучше с телефона
+  <a href="https://silokon.github.io/lagoona-demo/"><b>Открыть демо в браузере</b></a> · лучше с телефона ·
+  <a href="https://github.com/Silokon/lagoona-demo/releases/latest"><b>Скачать APK для Android</b></a>
 </p>
 
 <p align="center"><img src="docs/screens/preview.png" alt="Экраны приложения"></p>
