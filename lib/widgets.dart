@@ -103,7 +103,7 @@ class SwimCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: 1,
               child: Stack(children: [
-                Positioned.fill(child: SwimArt(type: s.type, variant: s.colors.first, radius: 0)),
+                Positioned.fill(child: SwimPhoto(s, radius: 0)),
                 if (s.isNew)
                   const Positioned(left: 10, top: 10, child: _Badge('NEW', Brand.mint)),
                 if (s.isHit && !s.isNew)
@@ -116,19 +116,6 @@ class SwimCard extends StatelessWidget {
                     color: fav ? Brand.coral : cs.onSurface,
                     onTap: () => st.toggleFavorite(s.id),
                   ),
-                ),
-                Positioned(
-                  left: 10,
-                  bottom: 8,
-                  child: Row(children: [
-                    for (final c in s.colors)
-                      Container(
-                        width: 14,
-                        height: 14,
-                        margin: const EdgeInsets.only(right: 4),
-                        decoration: BoxDecoration(color: c.main, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                      ),
-                  ]),
                 ),
               ]),
             ),
@@ -213,6 +200,7 @@ class SwimRow extends StatelessWidget {
   final Widget? bottom;
   final VoidCallback? onTap;
   final String? heroTag;
+  final Widget? image;
 
   const SwimRow({
     super.key,
@@ -224,11 +212,12 @@ class SwimRow extends StatelessWidget {
     this.bottom,
     this.onTap,
     this.heroTag,
+    this.image,
   });
 
   @override
   Widget build(BuildContext context) {
-    final art = SwimArt(type: type, variant: variant, radius: 16, showBubbles: false);
+    final art = image ?? SwimArt(type: type, variant: variant, radius: 16, showBubbles: false);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(

@@ -145,26 +145,6 @@ class _SwimPainter extends CustomPainter {
           ..quadraticBezierTo(30, 88, 22, 70)
           ..close();
         return [left, right, bottom];
-      case SwimType.tankini:
-        final top = Path()
-          ..moveTo(31, 8)
-          ..lineTo(38, 8)
-          ..quadraticBezierTo(50, 28, 62, 8)
-          ..lineTo(69, 8)
-          ..quadraticBezierTo(74, 30, 76, 62)
-          ..quadraticBezierTo(50, 68, 24, 62)
-          ..quadraticBezierTo(26, 30, 31, 8)
-          ..close();
-        final shorts = Path()
-          ..moveTo(25, 70)
-          ..quadraticBezierTo(50, 74, 75, 70)
-          ..lineTo(78, 104)
-          ..lineTo(55, 104)
-          ..lineTo(50, 92)
-          ..lineTo(45, 104)
-          ..lineTo(22, 104)
-          ..close();
-        return [top, shorts];
       case SwimType.sport:
         return [
           Path()
@@ -181,16 +161,6 @@ class _SwimPainter extends CustomPainter {
             ..lineTo(34, 70)
             ..quadraticBezierTo(30, 56, 28, 40)
             ..quadraticBezierTo(26, 22, 33, 6)
-            ..close()
-        ];
-      case SwimType.pareo:
-        return [
-          Path()
-            ..moveTo(18, 22)
-            ..quadraticBezierTo(50, 14, 82, 22)
-            ..quadraticBezierTo(88, 64, 72, 106)
-            ..quadraticBezierTo(50, 100, 28, 106)
-            ..quadraticBezierTo(12, 64, 18, 22)
             ..close()
         ];
     }
@@ -301,13 +271,6 @@ class _SwimPainter extends CustomPainter {
         canvas.drawLine(const Offset(22, 70), const Offset(14, 78), s);
         canvas.drawLine(const Offset(78, 70), const Offset(86, 78), s);
         break;
-      case SwimType.pareo:
-        canvas.drawCircle(const Offset(50, 19), 5, Paint()..color = v.accent);
-        canvas.drawCircle(const Offset(50, 19), 5, s);
-        for (var x = 30.0; x <= 70; x += 4) {
-          canvas.drawLine(Offset(x, 104), Offset(x, 110), s);
-        }
-        break;
       default:
         break;
     }
@@ -316,6 +279,30 @@ class _SwimPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _SwimPainter old) =>
       old.type != type || old.v != v || old.dark != dark || old.bubbles != bubbles;
+}
+
+/// Фото модели из каталога. Для вещей без фото рисуем иллюстрацию.
+class SwimPhoto extends StatelessWidget {
+  final Swimsuit swim;
+  final int index;
+  final double radius;
+  final double shift;
+  const SwimPhoto(this.swim, {super.key, this.index = 0, this.radius = 20, this.shift = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    final path = swim.photos[index.clamp(0, swim.photos.length - 1)];
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: Image.asset(
+        path,
+        fit: BoxFit.cover,
+        alignment: Alignment(0, (swim.focus + shift).clamp(-1.0, 1.0)),
+        filterQuality: FilterQuality.medium,
+        errorBuilder: (_, _, _) => SwimArt(type: swim.type, variant: swim.colors.first, radius: radius),
+      ),
+    );
+  }
 }
 
 /// Мини-график истории цены.

@@ -115,7 +115,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> load() async {
     _prefs = await SharedPreferences.getInstance();
-    final raw = _prefs!.getString('state');
+    final raw = _prefs!.getString('state_v2');
     if (raw == null) {
       _seed();
       return;
@@ -153,21 +153,21 @@ class AppState extends ChangeNotifier {
     }
 
     wardrobe.addAll([
-      from('s8', 0, 'S', {'Любимый', 'На отпуск'}, 3),
+      from('s6', 0, 'S', {'Любимый', 'На отпуск'}, 3),
       from('s1', 0, 'M', {'Любимый'}, 40),
-      from('s5', 1, 'S', {'Для бассейна'}, 75, qty: 2),
-      from('s6', 0, 'ONE', {'На отпуск'}, 12),
-      from('s11', 0, 'S', {'Новый', 'На отпуск'}, 1),
-      from('s3', 0, 'M', {}, 400, archived: true),
+      from('s11', 0, 'S', {'Для бассейна'}, 75, qty: 2),
+      from('s3', 0, 'S', {'На отпуск'}, 12),
+      from('s9', 0, 'S', {'Новый', 'На отпуск'}, 1),
+      from('s13', 0, 'M', {}, 400, archived: true),
     ]);
-    wishlist.addAll(['s2', 's4', 's12', 's7']);
-    priceAlerts.addAll(['s2', 's12']);
-    favorites.addAll(['s8', 's2', 's12']);
+    wishlist.addAll(['s2', 's10', 's15', 's5']);
+    priceAlerts.addAll(['s2', 's15']);
+    favorites.addAll(['s6', 's2', 's15']);
   }
 
   void _save() {
     _prefs?.setString(
-      'state',
+      'state_v2',
       jsonEncode({
         'theme': themeMode.index,
         'onboarded': onboarded,

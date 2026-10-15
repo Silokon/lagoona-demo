@@ -23,9 +23,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int page = 0;
 
   static const _slides = [
-    ('Весь пляжный гардероб в одном месте', 'Отмечайте, что уже есть, а что пора обновить к отпуску', ['s8', 's1', 's11']),
-    ('Каталог купальников от брендов', 'Фильтры по размеру, цвету, посадке и цене', ['s4', 's2', 's7']),
-    ('Лучшая цена в один тап', 'Сравниваем магазины и сообщаем, когда цена снизилась', ['s12', 's5', 's10']),
+    ('Весь пляжный гардероб в одном месте', 'Отмечайте, что уже есть, а что пора обновить к отпуску', ['s3', 's1', 's6']),
+    ('Каталог купальников от брендов', 'Фильтры по размеру, цвету, посадке и цене', ['s10', 's5', 's2']),
+    ('Лучшая цена в один тап', 'Сравниваем магазины и сообщаем, когда цена снизилась', ['s15', 's11', 's9']),
   ];
 
   @override
@@ -111,7 +111,7 @@ class _Collage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(28),
                     boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 24, offset: const Offset(0, 12))],
                   ),
-                  child: SwimArt(type: byId(id).type, variant: byId(id).colors.first, radius: 28),
+                  child: SwimPhoto(byId(id), radius: 28),
                 ),
               ),
             );
@@ -258,6 +258,7 @@ class WardrobeScreen extends StatelessWidget {
                   return SwimRow(
                     type: w.type,
                     variant: w.color,
+                    image: w.swimId == null ? null : SwimPhoto(byId(w.swimId!), radius: 16),
                     title: w.name,
                     subtitle: '${w.brand} · ${w.color.name} · размер ${w.size}',
                     onTap: () => _editItem(context, w),
@@ -385,7 +386,7 @@ class _EditSheetState extends State<_EditSheet> {
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
           Row(children: [
-            SizedBox(width: 72, height: 72, child: SwimArt(type: w.type, variant: w.color, radius: 16, showBubbles: false)),
+            SizedBox(width: 72, height: 72, child: w.swimId == null ? SwimArt(type: w.type, variant: w.color, radius: 16, showBubbles: false) : SwimPhoto(byId(w.swimId!), radius: 16)),
             const SizedBox(width: 14),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -578,6 +579,7 @@ class WishlistScreen extends StatelessWidget {
                 SwimRow(
                   type: s.type,
                   variant: s.colors.first,
+                  image: SwimPhoto(s, radius: 16),
                   title: s.name,
                   subtitle: 'дешевле всего в «${storeById(s.bestOffer.storeId).name}»',
                   onTap: () => openProduct(context, s.id),
@@ -700,7 +702,7 @@ class _ShopsScreenState extends State<ShopsScreen> {
                 for (final s in wish)
                   ListTile(
                     onTap: () => openProduct(context, s.id),
-                    leading: SizedBox(width: 48, height: 48, child: SwimArt(type: s.type, variant: s.colors.first, radius: 12, showBubbles: false)),
+                    leading: SizedBox(width: 48, height: 48, child: SwimPhoto(s, radius: 12)),
                     title: Text(s.name, style: const TextStyle(fontWeight: FontWeight.w800)),
                     subtitle: Text('${s.offers.length} магазина, разница ${rub(s.offers.map((o) => o.price).reduce(math.max) - s.minPrice)}'),
                     trailing: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -879,6 +881,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 children: const [
                   Text('Демо-приложение: каталог купальников, личный гардероб, список желаний и сравнение цен. Бренды и магазины вымышленные.'),
+                  SizedBox(height: 10),
+                  Text('Фото: Unsplash, авторы указаны в репозитории проекта.'),
                 ],
               ),
             ),

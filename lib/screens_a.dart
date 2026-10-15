@@ -88,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   width: 104,
                   height: 128,
-                  child: SwimArt(type: SwimType.bikini, variant: byId('s2').colors.first, radius: 22),
+                  child: SwimPhoto(byId('s3'), radius: 22),
                 ),
               ]),
             ),
@@ -134,6 +134,7 @@ class HomeScreen extends StatelessWidget {
               return SwimRow(
                 type: s.type,
                 variant: s.colors.first,
+                image: SwimPhoto(s, radius: 16),
                 title: s.name,
                 subtitle: '${s.brand} · ${storeById(s.bestOffer.storeId).name}',
                 onTap: () => openProduct(context, s.id),
@@ -519,8 +520,9 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   late final Swimsuit s = byId(widget.id);
-  late int variant = widget.initialVariant;
-  late final PageController pages = PageController(initialPage: widget.initialVariant);
+  final int variant = 0;
+  int photo = 0;
+  late final PageController pages = PageController();
   String? size;
 
   @override
@@ -542,7 +544,7 @@ class _ProductScreenState extends State<ProductScreen> {
       body: CustomScrollView(slivers: [
         SliverAppBar(
           pinned: true,
-          expandedHeight: 420,
+          expandedHeight: 470,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.all(6),
@@ -567,9 +569,9 @@ class _ProductScreenState extends State<ProductScreen> {
               Positioned.fill(
                 child: PageView.builder(
                   controller: pages,
-                  itemCount: s.colors.length,
-                  onPageChanged: (i) => setState(() => variant = i),
-                  itemBuilder: (_, i) => SwimArt(type: s.type, variant: s.colors[i], radius: 0),
+                  itemCount: s.photos.length,
+                  onPageChanged: (i) => setState(() => photo = i),
+                  itemBuilder: (_, i) => SwimPhoto(s, index: i, radius: 0, shift: -0.45),
                 ),
               ),
               Positioned(
@@ -577,13 +579,14 @@ class _ProductScreenState extends State<ProductScreen> {
                 left: 0,
                 right: 0,
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  for (var i = 0; i < s.colors.length; i++)
+                  if (s.photos.length > 1)
+                  for (var i = 0; i < s.photos.length; i++)
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       margin: const EdgeInsets.symmetric(horizontal: 3),
-                      width: i == variant ? 22 : 8,
+                      width: i == photo ? 22 : 8,
                       height: 8,
-                      decoration: BoxDecoration(color: Colors.white.withValues(alpha: i == variant ? 1 : 0.6), borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(color: Colors.white.withValues(alpha: i == photo ? 1 : 0.6), borderRadius: BorderRadius.circular(8)),
                     ),
                 ]),
               ),
@@ -609,30 +612,19 @@ class _ProductScreenState extends State<ProductScreen> {
               if (drop > 0) TagChip('-$drop% за полгода', color: Brand.mint),
             ]),
             const SizedBox(height: 18),
-            Text('Цвет: ${s.colors[variant].name}', style: const TextStyle(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 10),
             Row(children: [
-              for (var i = 0; i < s.colors.length; i++)
-                GestureDetector(
-                  onTap: () => pages.animateToPage(i, duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.only(right: 10),
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: i == variant ? Brand.lagoon : Colors.transparent, width: 2.5),
-                    ),
-                    child: Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: SweepGradient(colors: [s.colors[i].main, s.colors[i].accent, s.colors[i].main]),
-                      ),
-                    ),
-                  ),
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  gradient: SweepGradient(colors: [s.colors.first.main, s.colors.first.accent, s.colors.first.main]),
                 ),
+              ),
+              const SizedBox(width: 10),
+              Text('Цвет: ${s.colors.first.name}', style: const TextStyle(fontWeight: FontWeight.w800)),
             ]),
             const SizedBox(height: 18),
             const Text('Размер', style: TextStyle(fontWeight: FontWeight.w800)),
